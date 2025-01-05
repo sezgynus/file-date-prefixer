@@ -5,6 +5,7 @@
 #include <sstream>
 #include <regex>
 #include <string>
+#include "resources.h"
 
 namespace fs = std::filesystem;
 
