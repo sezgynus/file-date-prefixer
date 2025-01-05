@@ -17,7 +17,7 @@
 ## Kurulum
 
 ### 1. Hazır Binary ile Kurulum
-1. **[Son Sürümü İndirin](https://github.com/sezgynus/file-date-prefixer/releases/tag/v1.0.0)** (GitHub'dan).
+1. **[Son Sürümü İndirin](https://github.com/sezgynus/file-date-prefixer/releases/tag/v1.0.1)** (GitHub'dan).
 2. `Add2ContextMenu.bat` dosyasını **yönetici olarak** çalıştırın.
 3. İşlem tamamlandığında araç sağ tık menüsüne entegre edilmiş olacaktır.
 
