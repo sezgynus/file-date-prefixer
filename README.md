@@ -42,7 +42,7 @@
 ### 2. Sağ Tık Menüsü Yöntemi
 ![Sağ Tık Menüsü](Contents/Context.gif)
 1. Windows dosya gezgininde herhangi bir dosya veya klasöre **sağ tıklayın**.
-2. Açılan menüden **Prefix Date** seçeneğini seçin.
+2. Açılan menüden **Prefix Date** yada **Prefix Date(File/Folder Time)** seçeneğini seçin.
 3. Seçilen dosya/klasörün isminin başına otomatik olarak tarih eklenecektir. Örneğin:
    - `document.txt` → `202501052345 document.txt`
    - `project_folder` → `202501052345 project_folder`
