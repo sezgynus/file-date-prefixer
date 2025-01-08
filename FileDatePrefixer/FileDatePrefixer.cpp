@@ -64,6 +64,12 @@ std::string processFileName(const std::string& fileName, const std::string& date
     }
 }
 
+// Dosya isminden tarih prefix'ini kaldýr
+std::string removeDatePrefix(const std::string& fileName) {
+    std::regex dateRegex(R"(^\d{8}\d{4}\s)"); // YYYYMMDDHHMM formatýnda tarih kontrolü (boþluk dahil)
+    return std::regex_replace(fileName, dateRegex, "");
+}
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     int argc;
     LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
@@ -74,13 +80,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     }
 
     std::wstring timeOption = L"--use-system-time"; // Varsayýlan olarak sistem zamaný
-    if (argc >= 3) {
-        timeOption = std::wstring(argv[2]); // Zaman seçimi argümaný (eðer varsa)
-    }
+    bool removeDate = false;
 
-    if (timeOption != L"--use-system-time" && timeOption != L"--use-file-time") {
-        MessageBox(NULL, L"Geçersiz zaman seçimi! --use-system-time veya --use-file-time kullanýn.", L"Hata", MB_OK | MB_ICONERROR);
-        return 1;
+    if (argc >= 3) {
+        if (std::wstring(argv[2]) == L"--remove-date") {
+            removeDate = true; // Tarihi kaldýrma seçeneði
+        }
+        else {
+            timeOption = std::wstring(argv[2]); // Zaman seçimi argümaný
+        }
     }
 
     try {
@@ -90,19 +98,30 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             return 1;
         }
 
-        std::string date;
-        if (timeOption == L"--use-system-time") {
-            date = getCurrentDate(); // Sistem zamaný
+        if (removeDate) {
+            // Tarih prefix'ini kaldýr
+            std::string newFileName = removeDatePrefix(filePath.filename().string());
+            fs::path parentDir = filePath.parent_path();
+            fs::path newFilePath = parentDir / newFileName;
+
+            fs::rename(filePath, newFilePath);
         }
         else {
-            date = getFileModificationDate(filePath); // Dosya deðiþtirilme zamaný
-        }
-        // Dosya adýný iþle
-        std::string newFileName = processFileName(filePath.filename().string(), date);
-        fs::path parentDir = filePath.parent_path();
-        fs::path newFilePath = parentDir / newFileName;
+            std::string date;
+            if (timeOption == L"--use-system-time") {
+                date = getCurrentDate(); // Sistem zamaný
+            }
+            else if (timeOption == L"--use-file-time") {
+                date = getFileModificationDate(filePath); // Dosya deðiþtirilme zamaný
+            }
 
-        fs::rename(filePath, newFilePath);
+            // Dosya adýný iþle
+            std::string newFileName = processFileName(filePath.filename().string(), date);
+            fs::path parentDir = filePath.parent_path();
+            fs::path newFilePath = parentDir / newFileName;
+
+            fs::rename(filePath, newFilePath);
+        }
     }
     catch (const fs::filesystem_error& e) {
         MessageBoxA(NULL, e.what(), "Bir hata oluþtu", MB_OK | MB_ICONERROR);
