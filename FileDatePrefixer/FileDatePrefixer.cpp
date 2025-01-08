@@ -6,6 +6,7 @@
 #include <regex>
 #include <string>
 #include "resources.h"
+#include <windows.h>
 
 namespace fs = std::filesystem;
 
@@ -63,48 +64,48 @@ std::string processFileName(const std::string& fileName, const std::string& date
     }
 }
 
-int main(int argc, char* argv[]) {
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    int argc;
+    LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+
     if (argc < 2) {
-        std::cerr << "Dosya adý girmelisiniz.\n";
+        MessageBox(NULL, L"Dosya adý girmelisiniz.", L"Hata", MB_OK | MB_ICONERROR);
         return 1;
     }
 
-    std::string timeOption = "--use-system-time"; // Varsayýlan olarak sistem zamaný
+    std::wstring timeOption = L"--use-system-time"; // Varsayýlan olarak sistem zamaný
     if (argc >= 3) {
-        timeOption = argv[2]; // Zaman seçimi argümaný (eðer varsa)
+        timeOption = std::wstring(argv[2]); // Zaman seçimi argümaný (eðer varsa)
     }
 
-    if (timeOption != "--use-system-time" && timeOption != "--use-file-time") {
-        std::cerr << "Geçersiz zaman seçimi! --use-system-time veya --use-file-time kullanýn.\n";
+    if (timeOption != L"--use-system-time" && timeOption != L"--use-file-time") {
+        MessageBox(NULL, L"Geçersiz zaman seçimi! --use-system-time veya --use-file-time kullanýn.", L"Hata", MB_OK | MB_ICONERROR);
         return 1;
     }
 
     try {
         fs::path filePath = argv[1]; // Sürüklenen dosyanýn yolu
         if (!fs::exists(filePath)) {
-            std::cerr << "Dosya bulunamadý: " << filePath << "\n";
+            MessageBox(NULL, (L"Dosya bulunamadý: " + filePath.wstring()).c_str(), L"Hata", MB_OK | MB_ICONERROR);
             return 1;
         }
 
         std::string date;
-        if (timeOption == "--use-system-time") {
+        if (timeOption == L"--use-system-time") {
             date = getCurrentDate(); // Sistem zamaný
         }
         else {
             date = getFileModificationDate(filePath); // Dosya deðiþtirilme zamaný
         }
-        printf("Date: %s\n", date);
         // Dosya adýný iþle
         std::string newFileName = processFileName(filePath.filename().string(), date);
         fs::path parentDir = filePath.parent_path();
         fs::path newFilePath = parentDir / newFileName;
 
         fs::rename(filePath, newFilePath);
-
-        std::cout << "Dosya baþarýyla yeniden adlandýrýldý: " << newFilePath << " Date:"<< date<< "\n";
     }
     catch (const fs::filesystem_error& e) {
-        std::cerr << "Bir hata oluþtu: " << e.what() << "\n";
+        MessageBoxA(NULL, e.what(), "Bir hata oluþtu", MB_OK | MB_ICONERROR);
         return 1;
     }
 
