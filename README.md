@@ -3,7 +3,26 @@
 **FileDatePrefixer**, Windows'ta dosya veya klasör isimlerinin başına otomatik olarak tarih eklemenize olanak tanıyan kullanışlı bir araçtır. Sağ tık menüsüne entegre edilen bu araç sayesinde, dosya ve klasörlerinizi organize etmek çok daha kolay hale gelir.
 
 ---
+## Support | Destek Ol
 
+### English
+If you find my work helpful or inspiring, consider supporting me on Buy Me a Coffee! Your contributions help me keep building and sharing projects.
+
+<a href="https://buymeacoffee.com/sezgin5574z" target="_blank">
+    <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 200px !important;" >
+</a>
+
+---
+
+### Türkçe
+Eğer çalışmalarımı faydalı veya ilham verici buluyorsanız, Buy Me a Coffee üzerinden bana destek olabilirsiniz! Katkılarınız, projeler üretmeye ve paylaşmaya devam etmemi sağlıyor.
+
+<a href="https://buymeacoffee.com/sezgin5574z" target="_blank">
+    <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 200px !important;" >
+</a>
+
+
+---
 ## Özellikler
 
 - **Tarih Prefiksi Ekleme**: Dosya ve klasör isimlerinin başına otomatik olarak mevcut tarihi ekler.
