@@ -1,0 +1,53 @@
+name: Sign Commits
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install signing key
+        shell: bash
+        env:
+          SIGNING_KEY: ${{ secrets.COMMIT_SIGNING_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SIGNING_KEY" > ~/.ssh/github_actions_signing
+          chmod 600 ~/.ssh/github_actions_signing
+
+          git config --local user.name "Sezgin AÇIKGÖZ"
+          git config --local user.email "sezginacikgoz@mail.com"
+
+          git config --local gpg.format ssh
+          git config --local user.signingkey ~/.ssh/github_actions_signing
+          git config --local commit.gpgsign true
+
+      - name: Check signature
+        id: signature
+        shell: bash
+        run: |
+          if git cat-file commit HEAD | grep -q '^gpgsig '; then
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sign commit
+        if: steps.signature.outputs.signed == 'false'
+        shell: bash
+        run: |
+          git commit --amend --no-edit -S
+          git push --force-with-lease origin HEAD:master
